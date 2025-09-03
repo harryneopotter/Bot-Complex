@@ -36,6 +36,7 @@
 ## Commit & Pull Requests
 - Prefer concise, descriptive commits (Conventional Commits welcome: `feat:`, `fix:`, `chore:`).
 - PRs include: clear description, steps to run, screenshots or clips for UI changes, and linked issues. Keep diffs focused.
+ - Do not commit brainstorm/ideation assets (docs, PDFs, images, experimental dumps). Keep them in `local/` which is git-ignored.
 
 ## Security & Configuration
 - Required env vars (API): `GROQ_API_KEY`, `TOGETHERAI_API_KEY`, `CHUTES_API_KEY`. Optional: `PORT` (defaults to `8080`). Never commit secrets.
