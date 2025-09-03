@@ -3,6 +3,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import { Readable } from 'node:stream';
 import { setTimeout as delay } from 'node:timers/promises';
+import path from 'node:path';
 import { requestChatStream } from './vendors.js';
 import { composeMessages, getPersonaById } from './templates.js';
 import personas from './bots/registry.json' assert { type: 'json' };
@@ -241,6 +242,19 @@ app.post('/api/chat', async (req, res) => {
     console.log(`[${requestId}] ${ms}ms`);
   }
 });
+
+// Serve built UI (single-origin deploys)
+// Note: This should come after API routes so it doesn't shadow them.
+try {
+  const distDir = path.resolve(process.cwd(), 'web', 'dist');
+  app.use(express.static(distDir));
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(distDir, 'index.html'));
+  });
+} catch (e) {
+  // eslint-disable-next-line no-console
+  console.warn('Static UI not available. Did you build web/dist?', e?.message || e);
+}
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

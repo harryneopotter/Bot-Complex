@@ -23,9 +23,14 @@ pnpm-debug.log*
 server/.env
 web/.env*
 
+# Local-only docs (not committed)
+LOCAL_DEPLOY_NOTES.md
+
+# Local session/context artifacts
+context/
+
 # OS/editor
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
-

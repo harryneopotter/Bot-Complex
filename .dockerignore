@@ -1,0 +1,17 @@
+node_modules
+npm-debug.log*
+pnpm-lock.yaml
+yarn.lock
+.git
+.gitignore
+**/.DS_Store
+*.local
+*.env
+web/dist
+*.log
+*.swp
+*.swo
+*.tmp
+coverage
+dist
+

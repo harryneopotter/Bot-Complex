@@ -43,5 +43,14 @@
 - CORS is enabled on the API for dev; restrict in production as needed.
 
 ## Personas (Bots)
-- Add/update bots in `server/src/bots/registry.json` (id, name, prompts, few‑shots). Document in `PERSONAS.md` as needed.
-- The UI has a curated card list in `web/src/App.jsx`; to surface a brand‑new persona id, add a matching card there as well.
+- Add/update bots in `server/src/bots/registry.json` (id, name, prompts, few-shots). Document in `PERSONAS.md` as needed.
+- The UI has a curated card list in `web/src/App.jsx`; to surface a brand-new persona id, add a matching card there as well.
+
+## Agent SOP: Context & History
+- Trigger phrase: When asked to "check agents.md and context" (or similar: "read context", "load history", "review AGENTS.md"), first read local context before other actions.
+- Sources: Read `AGENTS.md` and all `./context/*.jsonl` files if present. Optionally include `SESSION_SUMMARY.md` when available.
+- Ordering: Process JSONL files newest-first by last modified time; within each, prefer the most recent content (tail-first reasoning).
+- Limits: Read only the last ~200 lines per JSONL file (and ~400 lines for `AGENTS.md` if you must quote). Do not dump full files; extract essentials.
+- Output: Summarize key facts, decisions, open TODOs, and any constraints relevant to the current task. Cite filenames you drew from, not verbatim dumps.
+- Safety: Treat these as read-only local artifacts; do not attempt network calls to obtain context. If the `context` directory is missing or empty, say so explicitly and proceed.
+- Re-check: If the user asks again later, re-open both sources and note any deltas since the last read (new files or modified timestamps).
