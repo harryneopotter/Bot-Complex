@@ -29,6 +29,9 @@ LOCAL_DEPLOY_NOTES.md
 # Local session/context artifacts
 context/
 
+# Local, untracked assets (brainstorm, images, archives)
+local/
+
 # OS/editor
 .DS_Store
 Thumbs.db
