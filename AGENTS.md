@@ -36,7 +36,12 @@
 ## Commit & Pull Requests
 - Prefer concise, descriptive commits (Conventional Commits welcome: `feat:`, `fix:`, `chore:`).
 - PRs include: clear description, steps to run, screenshots or clips for UI changes, and linked issues. Keep diffs focused.
- - Do not commit brainstorm/ideation assets (docs, PDFs, images, experimental dumps). Keep them in `local/` which is git-ignored.
+- Do not commit brainstorm/ideation assets (docs, PDFs, images, experimental dumps). Keep them in `local/` which is git-ignored.
+
+### Pre-commit Hook (enable once per clone)
+- Set hooks path: `git config core.hooksPath .githooks`
+- The hook blocks large/binary and brainstorm files (e.g., `*.pdf`, images, archives, `local/`, `arcade/`).
+- Override in rare cases with `BYPASS_PRECOMMIT=1 git commit` (avoid using in normal flow).
 
 ## Security & Configuration
 - Required env vars (API): `GROQ_API_KEY`, `TOGETHERAI_API_KEY`, `CHUTES_API_KEY`. Optional: `PORT` (defaults to `8080`). Never commit secrets.

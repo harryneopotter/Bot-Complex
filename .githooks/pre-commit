@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Pre-commit guard: block large/binary/brainstorm assets from being committed
+# Allow bypass with BYPASS_PRECOMMIT=1
+if [[ "${BYPASS_PRECOMMIT:-}" == "1" ]]; then
+  exit 0
+fi
+
+red() { printf "\033[31m%s\033[0m\n" "$*"; }
+yellow() { printf "\033[33m%s\033[0m\n" "$*"; }
+
+# File size limit (bytes)
+MAX_SIZE=$((2 * 1024 * 1024)) # 2 MB
+
+# Extensions/patterns to block
+BLOCK_EXTS=(
+  pdf docx xlsx pptx 
+  jpg jpeg png gif webp svg
+  zip tar gz bz2 7z rar
+  psd ai sketch mp4 mov wav mp3
+)
+
+BLOCK_PATHS=(
+  '^local/'
+  '^arcade/'
+)
+
+status=0
+violations=()
+
+mapfile -t files < <(git diff --cached --name-only --diff-filter=AM)
+
+for f in "${files[@]}"; do
+  # Skip deleted or missing
+  [[ -e "$f" ]] || true
+
+  # Path rules
+  for pat in "${BLOCK_PATHS[@]}"; do
+    if [[ "$f" =~ $pat ]]; then
+      violations+=("$f: blocked path pattern ($pat)")
+    fi
+  done
+
+  # Extension rules
+  ext="${f##*.}"
+  for e in "${BLOCK_EXTS[@]}"; do
+    if [[ "$ext" == "$e" ]]; then
+      violations+=("$f: blocked extension .$e")
+      break
+    fi
+  done
+
+  # Size rule (use staged blob size when possible)
+  sha=$(git rev-parse --verify ":$f" 2>/dev/null || true)
+  if [[ -n "$sha" ]]; then
+    size=$(git cat-file -s "$sha")
+  else
+    # Fallback to working tree size
+    if [[ -f "$f" ]]; then
+      if command -v stat >/dev/null 2>&1; then
+        if stat --version >/dev/null 2>&1; then # GNU stat
+          size=$(stat -c%s "$f")
+        else # BSD/macOS
+          size=$(stat -f%z "$f")
+        fi
+      else
+        size=$(wc -c <"$f" | tr -d ' ')
+      fi
+    else
+      size=0
+    fi
+  fi
+  if (( size > MAX_SIZE )); then
+    violations+=("$f: exceeds size limit ($(printf '%.2f' "$(echo "$size/1048576" | bc -l)") MB > 2 MB)")
+  fi
+done
+
+if (( ${#violations[@]} > 0 )); then
+  red "✖ Commit blocked by pre-commit hook"
+  echo "The following files violate repository policy:"
+  for v in "${violations[@]}"; do
+    yellow "  - $v"
+  done
+  echo "\nIf you must override, set BYPASS_PRECOMMIT=1 for this commit."
+  echo "Keep brainstorm/large/binary assets out of git (use local/)."
+  exit 1
+fi
+
+exit 0
+
