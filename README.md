@@ -1,61 +1,77 @@
-# Bot-Complex
 
-Playful, bots-first chat arcade with 21 distinct personas ("residents"). React UI + Node/Express API with streamed responses and multi-provider fallbacks.
+# Bot-Complex: The Residents
+
+![Bot Complex Home](assets/Bot Complex home.jpg)
+
+## Overview
+Bot-Complex is a playful AI "apartment building" where each bot ("resident") occupies an apartment (card) and greets a visiting guest (the user). This project is character-first, ensemble AI fun—think sitcom, not productivity suite. All 21 residents are available from day one, each with a unique persona, voice, and specialty.
+
+---
 
 ## Features
-- 21 personas with curated prompts and openers
-- SSE-style streaming responses
-- Provider ladder + persona preferences (GROQ, Together, Chutes)
-- Single-origin Docker deploy (serves built UI + API on :8080)
+- **21 Unique AI Residents:** Each with strong voice, constraints, and few-shot examples.
+- **Delightful Interactions:** Short, funny, surprising responses; minimal friction.
+- **Consistent Persona Experience:** Each resident maintains format and tone across prompts.
+- **Transparent AI:** Provider/model surfaced in-stream; ephemeral session memory only.
+- **Single-Origin Deploy:** Both frontend and backend served from port 8080 for easy deployment.
 
-## Requirements
-- Docker (recommended) or Node >= 18.17
+---
 
-## Quick Start (Docker)
-- Copy env: `cp .env.example .env` and fill `GROQ_API_KEY`, `TOGETHERAI_API_KEY`, `CHUTES_API_KEY`
-- Optional: `BOT_COMPLEX_PREMISE=1` and `BOT_COMPLEX_MOVE_IN=YYYY-MM-DD`
-- Run: `docker compose up -d --build`
-- Verify: `curl -f http://localhost:8080/health` → `{ ok: true }`
-- Open UI: `http://localhost:8080`
+## Screenshots
 
-## Quick Start (Local Dev)
-- Server: `cd server && npm install && npm run dev` (listens on :8080)
-- Web: `cd web && npm install && npm run dev` (Vite on :5173)
-- If API not on the same origin, in the browser console set:
-  - `window.__API_BASE__ = 'http://localhost:8080'`
+![Complex Residents](assets/Complex Residents.jpg)
 
-## Environment
-- Required: `GROQ_API_KEY`, `TOGETHERAI_API_KEY`, `CHUTES_API_KEY`
-- Optional: `PORT` (default 8080), `BOT_COMPLEX_PREMISE=1`, `BOT_COMPLEX_MOVE_IN=YYYY-MM-DD`
+![Literal Genie](assets/Literal Genie.jpg)
 
-## API Endpoints
-- `GET /health`: service check
-- `GET /api/bots`: catalog `{ bots: [{ id, name, opener }] }`
-- `POST /api/chat`: streamed response; body includes `{ botId, messages, quality?, providerHint?, modelHint? }`
+---
 
-## Project Structure
-- `server/`: Express API (`src/server.js`, `src/templates.js`, `src/vendors.js`)
-- `server/src/bots/`: `registry.json`, `PERSONAS.md`
-- `web/`: React app (Vite) — `src/` and Tailwind config
-- Docker/Compose: root `Dockerfile`, `docker-compose.yml`
+## Getting Started
 
-## Deployment
-- See `DEPLOYMENT.md` for VM + Docker, Zip/SCP, and container registry options.
-- In production, restrict CORS if splitting origins.
+### Prerequisites
+- Docker and Docker Compose installed
+- Node.js (for local development)
 
-## Security & Input Handling
-- User input is sanitized to remove control characters and normalize whitespace
-- Messages are limited to 2000 characters to prevent API overload
-- Invalid inputs are rejected with user-friendly error messages
-- All chat data is processed through validated sanitization before backend transmission
+### Local Development
+1. Install dependencies:
+  ```sh
+  cd web && npm install
+  cd ../server && npm install
+  ```
+2. Run the frontend (Vite):
+  ```sh
+  cd ../web && npm run dev
+  ```
+3. Run the backend (Express):
+  ```sh
+  cd ../server && npm start
+  ```
 
-## Error Handling
-- All API errors (chat, bot catalog) are caught and displayed as a user-friendly banner in the chat modal.
-- Errors are logged to the browser console for developer debugging.
-- Error messages are cleared when the chat modal closes or a new message is sent.
-- To test error handling, simulate network failures, stop the backend, or use invalid API URLs; the UI will show the error and log details to the console.
+### Production Deployment (Recommended)
+1. Build and run with Docker Compose:
+  ```sh
+  sudo docker compose build
+  sudo docker compose up
+  ```
+2. Visit `http://localhost:8080` (or your server IP) to use the app.
 
-## Troubleshooting
-- Missing keys → chat errors: set at least one provider key in `.env`.
-- Port busy → set `PORT` or adjust compose mapping.
-- Split dev CORS → ensure `window.__API_BASE__` points to the API.
+---
+
+## Project Premise
+See `PREMISE.md` for the full vision and design philosophy.
+
+---
+
+## Vocabulary
+- **Resident:** A persona from `server/src/bots/registry.json`.
+- **Apartment:** The card representing a resident.
+- **Guest:** The visiting user who chats with residents.
+
+---
+
+## Contributing
+- Contributions welcome! Please see `CODEBASE_IMPROVEMENT_PLAN.md` for improvement ideas and priorities.
+
+---
+
+## License
+MIT
