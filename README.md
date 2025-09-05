@@ -1,7 +1,7 @@
 
 # Bot-Complex: The Residents
 
-![Bot Complex Home](assets/Bot Complex home.jpg)
+![Bot Complex Home](assets/bot-complex-home.jpg)
 
 ## Overview
 Bot-Complex is a playful AI "apartment building" where each bot ("resident") occupies an apartment (card) and greets a visiting guest (the user). This project is character-first, ensemble AI fun—think sitcom, not productivity suite. All 21 residents are available from day one, each with a unique persona, voice, and specialty.
@@ -20,9 +20,9 @@ Bot-Complex is a playful AI "apartment building" where each bot ("resident") occ
 ## Screenshots
 
 
-![Complex Residents](assets/Complex Residents.jpg)
+![Complex Residents](assets/complex-residents.jpg)
 
-![Literal Genie](assets/Literal Genie.jpg)
+![Literal Genie](assets/literal-genie.jpg)
 
 ---
 
