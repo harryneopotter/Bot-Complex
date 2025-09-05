@@ -19,6 +19,7 @@ Bot-Complex is a playful AI "apartment building" where each bot ("resident") occ
 
 ## Screenshots
 
+
 ![Complex Residents](assets/Complex Residents.jpg)
 
 ![Literal Genie](assets/Literal Genie.jpg)
