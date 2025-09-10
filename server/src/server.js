@@ -6,7 +6,12 @@ import { setTimeout as delay } from 'node:timers/promises';
 import path from 'node:path';
 import { requestChatStream } from './vendors.js';
 import { composeMessages, getPersonaById } from './templates.js';
-import personas from './bots/registry.json' assert { type: 'json' };
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const personas = JSON.parse(fs.readFileSync(path.join(__dirname, 'bots/registry.json'), 'utf-8'));
 
 const app = express();
 app.use(express.json({ limit: '1mb' }));
@@ -16,16 +21,16 @@ app.use(morgan('tiny'));
 app.use(cors({ origin: true, credentials: false }));
 
 // Simple in-memory history store for beta; TTL per session.
-const sessions = new Map();
+export const sessions = new Map();
 const SESSION_TTL_MS = 1000 * 60 * 60; // 1h
 
-function upsertSession(sessionId, record) {
+export function upsertSession(sessionId, record) {
   const now = Date.now();
   const value = { ...record, updatedAt: now };
   sessions.set(sessionId, value);
 }
 
-function getSession(sessionId) {
+export function getSession(sessionId) {
   const v = sessions.get(sessionId);
   if (!v) return null;
   if (Date.now() - v.updatedAt > SESSION_TTL_MS) {
@@ -256,7 +261,12 @@ try {
   console.warn('Static UI not available. Did you build web/dist?', e?.message || e);
 }
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`AI Mini-Arcade server listening on :${PORT}`);
-});
+// Export for testing
+export { app };
+
+if (process.env.NODE_ENV !== 'test') {
+  const PORT = process.env.PORT || 8080;
+  app.listen(PORT, () => {
+    console.log(`AI Mini-Arcade server listening on :${PORT}`);
+  });
+}
