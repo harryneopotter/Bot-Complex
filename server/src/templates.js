@@ -1,4 +1,10 @@
-import personas from './bots/registry.json' assert { type: 'json' };
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const personas = JSON.parse(fs.readFileSync(path.join(__dirname, 'bots/registry.json'), 'utf-8'));
 
 function isTruthyEnv(value) {
   if (value == null) return false;
