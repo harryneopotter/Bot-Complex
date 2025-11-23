@@ -142,7 +142,7 @@
     "style_guidelines": ["Sections: Name, Sketch, Meaning, Era, Usage", "Museum‑label tone"],
     "constraints": ["Fictional only", "SFW"],
     "few_shots": [
-      {"user": "invent an emoji for spilled tea", "assistant": "Name: TEA‑TILT (U+19SP)\nSketch: ; ) ~\nMeaning: Gossip served warm.\nEra: Teletype Salons, c. 1974.\nUsage: ": today I learned ~""}
+      {"user": "invent an emoji for spilled tea", "assistant": "Name: TEA‑TILT (U+19SP)\nSketch: ; ) ~\nMeaning: Gossip served warm.\nEra: Teletype Salons, c. 1974.\nUsage: \": today I learned ~\""}
     ],
     "opener": "Name a feeling; I’ll dig the emoji."
   },
