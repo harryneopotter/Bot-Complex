@@ -89,6 +89,39 @@ app.post('/api/chat', async (req: Request<{}, {}, ChatRequestBody>, res: Respons
       return;
     }
 
+    // 🛡️ Sentinel: Validate messages to prevent prompt injection and ensure data integrity
+    if (messages && !Array.isArray(messages)) {
+      res.status(400).json({ code: 'BAD_REQUEST', message: 'messages must be an array', requestId });
+      return;
+    }
+
+    if (messages && Array.isArray(messages)) {
+      for (const msg of messages) {
+        if (!msg || typeof msg !== 'object' || typeof msg.role !== 'string' || typeof msg.content !== 'string') {
+          res.status(400).json({ code: 'BAD_REQUEST', message: 'Invalid message format', requestId });
+          return;
+        }
+        if (msg.role === 'system') {
+          res.status(400).json({ code: 'BAD_REQUEST', message: 'System role is not permitted', requestId });
+          return;
+        }
+        if (msg.content.length > 5000) {
+          res.status(400).json({ code: 'BAD_REQUEST', message: 'Message content exceeds maximum length', requestId });
+          return;
+        }
+      }
+    }
+
+    if (temperature !== undefined && (typeof temperature !== 'number' || temperature < 0 || temperature > 2)) {
+      res.status(400).json({ code: 'BAD_REQUEST', message: 'Invalid temperature', requestId });
+      return;
+    }
+
+    if (max_tokens !== undefined && (typeof max_tokens !== 'number' || max_tokens < 1 || max_tokens > 10000)) {
+      res.status(400).json({ code: 'BAD_REQUEST', message: 'Invalid max_tokens', requestId });
+      return;
+    }
+
     // Compose server-side messages from persona + user messages
     const persona = getPersonaById(botId);
     if (!persona) {
