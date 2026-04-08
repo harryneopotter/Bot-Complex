@@ -9,7 +9,7 @@
   "scripts": {
     "start": "tsx src/server.ts",
     "dev": "tsx --watch src/server.ts",
-    "test": "tsx --test \"src/**/*.test.ts\"",
+    "test": "tsx --test src/**/*.test.ts src/**/*.test.js",
     "build": "tsc"
   },
   "dependencies": {
