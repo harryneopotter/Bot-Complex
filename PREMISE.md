@@ -1,7 +1,7 @@
 # Premise: The Residents
 
 ## Synopsis
-This project is a playful AI “apartment building.” Each bot (“resident”) occupies an apartment (card) and greets a visiting guest (the user). It is a character-first, ensemble experience — not productivity software. Day one includes all 21 residents so their voices can be experienced side-by-side like a sitcom’s first episodes.
+This project is a playful AI "apartment building." Each bot ("resident") occupies an apartment (card) and greets a visiting guest (the user). It is a character-first, ensemble experience — not productivity software. Day one includes all 21 residents so their voices can be experienced side-by-side like a sitcom's first episodes.
 
 ## Goals
 - Showcase persona craft: strong voice, constraints, and few-shots per resident.
@@ -22,10 +22,24 @@ This project is a playful AI “apartment building.” Each bot (“resident”)
 
 ## Current Scope
 - 21 residents in registry; UI shows those IDs from the server catalog.
-- One-turn chats emphasized; streaming responses; simple “send → watch” loop.
+- One-turn chats emphasized; streaming responses; simple "send → watch" loop.
 - Provider ladder with sane defaults; safe, SFW constraints in prompts.
 
+## Special Features
+
+### Anthropic Key Activation (Resident #21)
+When a user provides their own API keys with an Anthropic key present:
+- The background color shifts to a heavy, ominous tone.
+- Resident #21's voice becomes heavier and more intense.
+- Identity phrase changes from "grauk" to **"I am Clawed!"** — a darker, more commanding presence.
+
+### Guardrail Enforcement & Neighbor Intervention
+If a user attempts to push any bot to break its guardrails:
+1. **First Escalation**: The targeted bot calls on neighboring residents for backup. The neighbors intervene with humorous jokes and light-hearted deflection.
+2. **Second Escalation**: If the user continues to push, Clawed (Resident #21) descends with dramatic lighting and yells at the user to back off. The scene is theatrical and over-the-top.
+3. **Resolution**: Once the incident passes, the complex resets to its original cheerful state—business as usual, as if nothing happened.
+
 ## Future Hooks (not implemented yet)
-- Inter-resident features (“neighbors”) and ensemble interactions.
+- Inter-resident features ("neighbors") and ensemble interactions.
 - Richer theming (floors, lobby), analytics, or rate limiting.
 - Optional gating for broader releases if needed later.
