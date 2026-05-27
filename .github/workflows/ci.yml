@@ -31,7 +31,7 @@ jobs:
       run: cd server && npm test
 
     - name: Install Web Dependencies
-      run: cd web && npm ci
+      run: cd web && npm install
 
     - name: Build Web
       run: cd web && npm run build
