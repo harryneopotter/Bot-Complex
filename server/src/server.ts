@@ -9,6 +9,7 @@ import personasData from './bots/registry.json' with { type: 'json' };
 import { ChatMessage, ChatOptions, Persona } from './types.js';
 
 const personas = personasData as Persona[];
+const GENERIC_ERROR_MESSAGE = 'An unexpected error occurred. Please try again later.';
 
 const app = express();
 app.use(express.json({ limit: '1mb' }));
@@ -53,7 +54,8 @@ app.get('/api/bots', (_req: Request, res: Response) => {
     const list = (personas || []).map(p => ({ id: p.id, name: p.name, opener: p.opener })).sort((a,b)=>a.id-b.id);
     res.json({ bots: list });
   } catch (e: any) {
-    res.status(500).json({ code: 'SERVER_ERROR', message: String(e?.message || e) });
+    console.error('Error fetching bots:', e);
+    res.status(500).json({ code: 'SERVER_ERROR', message: GENERIC_ERROR_MESSAGE });
   }
 });
 
@@ -253,14 +255,16 @@ app.post('/api/chat', async (req: Request<{}, {}, ChatRequestBody>, res: Respons
     }
 
     // All attempts failed
+    console.error(`[${requestId}] All attempts failed:`, lastError);
     res.write(`event: error\n`);
     res.write(
-      `data: ${JSON.stringify({ code: 'UPSTREAM_ERROR', message: String(lastError?.message || 'All providers failed'), requestId })}\n\n`
+      `data: ${JSON.stringify({ code: 'UPSTREAM_ERROR', message: GENERIC_ERROR_MESSAGE, requestId })}\n\n`
     );
     res.end();
   } catch (e: any) {
+    console.error(`[${requestId}] Server error:`, e);
     if (!res.headersSent) {
-      res.status(500).json({ code: 'SERVER_ERROR', message: String(e?.message || e), requestId });
+      res.status(500).json({ code: 'SERVER_ERROR', message: GENERIC_ERROR_MESSAGE, requestId });
     } else {
       console.error('Error after headers sent:', e);
     }
