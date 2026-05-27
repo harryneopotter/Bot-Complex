@@ -52,8 +52,9 @@ app.get('/api/bots', (_req: Request, res: Response) => {
   try {
     const list = (personas || []).map(p => ({ id: p.id, name: p.name, opener: p.opener })).sort((a,b)=>a.id-b.id);
     res.json({ bots: list });
-  } catch (e: any) {
-    res.status(500).json({ code: 'SERVER_ERROR', message: String(e?.message || e) });
+  } catch (e: unknown) {
+    const errorMessage = e instanceof Error ? e.message : String(e);
+    res.status(500).json({ code: 'SERVER_ERROR', message: errorMessage });
   }
 });
 
@@ -258,9 +259,10 @@ app.post('/api/chat', async (req: Request<{}, {}, ChatRequestBody>, res: Respons
       `data: ${JSON.stringify({ code: 'UPSTREAM_ERROR', message: String(lastError?.message || 'All providers failed'), requestId })}\n\n`
     );
     res.end();
-  } catch (e: any) {
+  } catch (e: unknown) {
     if (!res.headersSent) {
-      res.status(500).json({ code: 'SERVER_ERROR', message: String(e?.message || e), requestId });
+      const errorMessage = e instanceof Error ? e.message : String(e);
+      res.status(500).json({ code: 'SERVER_ERROR', message: errorMessage, requestId });
     } else {
       console.error('Error after headers sent:', e);
     }
@@ -279,9 +281,10 @@ try {
   app.get('*', (_req: Request, res: Response) => {
     res.sendFile(path.join(distDir, 'index.html'));
   });
-} catch (e: any) {
+} catch (e: unknown) {
+  const errorMessage = e instanceof Error ? e.message : String(e);
   // eslint-disable-next-line no-console
-  console.warn('Static UI not available. Did you build web/dist?', e?.message || e);
+  console.warn('Static UI not available. Did you build web/dist?', errorMessage);
 }
 
 const PORT = process.env.PORT || 8080;
