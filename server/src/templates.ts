@@ -3,6 +3,9 @@ import { Persona, ChatMessage } from './types.js';
 
 const personas = personasData as Persona[];
 
+// Pre-compute core residents (IDs 1..21 only) from the static personas array
+const coreResidents = (personas || []).filter(p => typeof p.id === 'number' && p.id >= 1 && p.id <= 21);
+
 function isTruthyEnv(value: string | undefined): boolean {
   if (value == null) return false;
   const v = String(value).toLowerCase().trim();
@@ -19,8 +22,7 @@ function buildResidencyPremise(persona: Persona): ChatMessage | null {
   const now = new Date();
   const daysSince = Math.max(0, Math.floor((now.getTime() - moveInDate.getTime()) / (1000 * 60 * 60 * 24)));
 
-  // Gather known neighbor names (IDs 1..21 only), excluding self
-  const coreResidents = (personas || []).filter(p => typeof p.id === 'number' && p.id >= 1 && p.id <= 21);
+  // Gather known neighbor names, excluding self
   const neighborNames = coreResidents
     .filter(p => p.id !== persona?.id)
     .map(p => p.name)
